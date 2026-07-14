@@ -1,58 +1,75 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Pelagic
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A marketing site and authenticated dashboard for **Pelagic**, an observability product that fuses logs, metrics, and traces into one queryable timeline so teams find root cause before the pager fires.
 
-## About Laravel
+## What it is
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Public marketing site**: Home, Product, Pricing, Customers, and Documentation pages with a dark/light theme and responsive layout.
+- **Authentication**: Login, registration, email verification, password reset, and profile management, built on Laravel Breeze (Volt + Livewire).
+- **Authenticated app**: A coral-themed dashboard with a sidebar shell, stat cards, recent signals, connected sources, and quick links to the docs.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Laravel 13** (PHP 8.3+) as the application framework.
+- **Livewire 3 + Volt** for reactive, server-rendered UI components (no separate JavaScript SPA framework).
+- **Laravel Breeze** (Volt stack) for the auth scaffolding.
+- **Tailwind CSS v4** compiled through the `@tailwindcss/vite` plugin, bundled by **Vite 8**.
+- **PostgreSQL** as the database (via `pdo_pgsql`).
+- Self-hosted variable fonts (Space Grotesk, JetBrains Mono) and Phosphor Icons. No UI component library; the design system is hand-built CSS tokens in `resources/css/app.css`.
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.3 or higher
+- PostgreSQL
+- Node.js and npm
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Installation
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env        # then set DB_CONNECTION=pgsql and your Postgres credentials
+php artisan key:generate
+php artisan migrate
+npm install
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Running locally
 
-## Contributing
+Use two separate terminals:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan serve     # http://127.0.0.1:8000
+npm run dev           # Vite dev server with hot reload
+```
 
-## Code of Conduct
+> On Windows, do **not** use `composer dev`. It launches `php artisan pail`, which needs the `pcntl` extension that PHP on Windows does not provide, and `concurrently --kill-others` then tears down the other processes. Running `php artisan serve` and `npm run dev` in separate terminals avoids this.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Running the tests
 
-## Security Vulnerabilities
+Tests use an in-memory SQLite database and PHPUnit:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan test
+```
+
+The suite covers the auth flows (registration, login, email verification, password reset/update, profile) and renders the authenticated dashboard and profile.
+
+## Project layout
+
+- `routes/web.php` and `routes/auth.php` define the public and authenticated routes.
+- `resources/views/` holds the Blade and Volt components:
+  - `layouts/marketing.blade.php` for public pages, `layouts/guest.blade.php` for auth screens, `layouts/app.blade.php` for the authenticated shell.
+  - `livewire/pages/auth/*` for the auth Volt components.
+  - `livewire/layout/navigation.blade.php` for the app sidebar.
+  - `dashboard.blade.php` and `profile.blade.php` for the authenticated pages.
+- `resources/css/app.css` is the design system (color tokens, dark mode, theme toggle, hover glow).
+- `resources/js/app.js` wires the theme toggle, mobile nav, and scroll reveal, and re-applies them after Livewire navigation.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced under the MIT license.
+
+enjoy the web and the vibe :D
+
+NOTE: DO NOT USE YOUR REAL EMAIL!!! (this is a testing website)

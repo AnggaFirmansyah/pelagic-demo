@@ -66,6 +66,74 @@ The suite covers the auth flows (registration, login, email verification, passwo
 - `resources/css/app.css` is the design system (color tokens, dark mode, theme toggle, hover glow).
 - `resources/js/app.js` wires the theme toggle, mobile nav, and scroll reveal, and re-applies them after Livewire navigation.
 
+## Features
+
+**Public site**
+- **Home**: "One timeline for every signal your stack emits." Fuses logs, metrics, and traces into one queryable view.
+- **Product**: a single pipe query language across all three signals, self-drawing service maps, and alerts shipped with the causing commit.
+- **Pricing**: plans include the unified query language and unlimited dashboards (prices are illustrative).
+- **Customers**: case studies (Holm Logistics, 52% lower mean-time-to-resolve; Northwind Retail, 3.1M events/s through peak with zero war rooms) and a pull quote from Cobalt Bank.
+- **Docs**: install the agent, send your first query, the query language reference, and retention/storage notes.
+
+**Authentication**
+- Registration, login, email verification, password reset, and profile management (name, email, password, account deletion).
+- "Remember me" sessions and password confirmation before sensitive actions.
+
+**Authenticated app**
+- Dashboard with stat cards (services watched, events per second, mean time to detect), a "Jump back in" link grid, recent signals, and connected sources.
+- Sidebar shell with the user avatar, theme toggle, and logout.
+- Persistent light/dark theme (stored in `localStorage`) and a hover glow on interactive controls.
+
+## Screenshots
+
+**Marketing home** (light and dark)
+
+![Marketing home, light](docs/home-light.png)
+![Marketing home, dark](docs/home-dark.png)
+
+**Auth**
+
+![Login, light](docs/login-light.png)
+![Login, dark](docs/login-dark.png)
+![Register](docs/register.png)
+
+**Public pages**
+
+![Pricing](docs/pricing.png)
+![Customers](docs/customers.png)
+![Docs](docs/docs.png)
+
+**Authenticated app**
+
+![Dashboard, light](docs/dashboard-light.png)
+![Dashboard, dark](docs/dashboard-dark.png)
+![Profile](docs/profile-light.png)
+
+## Deployment
+
+This is a standard Laravel app, so any PHP host with PostgreSQL works (Laravel Forge, Vapor, or a traditional server).
+
+1. **Build front-end assets** for production:
+   ```bash
+   npm run build
+   ```
+   In production, `@vite` automatically serves the versioned files from `public/build`; no dev server is needed.
+
+2. **Configure environment** (`.env`):
+   - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://your-domain`
+   - `DB_CONNECTION=pgsql` plus database credentials
+   - `MAIL_*` so password reset and verification emails actually send
+   - `QUEUE_CONNECTION` / `SESSION_DRIVER` as desired (file, redis, or database)
+
+3. **Run migrations on deploy**:
+   ```bash
+   php artisan migrate --force
+   ```
+
+4. **No special SPA server required.** Livewire `wire:navigate` works with ordinary Laravel routing, so the smooth in-app navigation needs no extra infrastructure.
+
+Note: the theme is chosen client-side and persisted in `localStorage`, so it works without server configuration.
+
 ## License
 
 This project is open-sourced under the MIT license.
